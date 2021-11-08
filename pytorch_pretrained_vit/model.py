@@ -18,7 +18,7 @@ class PositionalEmbedding1D(nn.Module):
     def __init__(self, seq_len, dim):
         super().__init__()
         self.pos_embedding = nn.Parameter(torch.zeros(1, seq_len, dim))
-    
+
     def forward(self, x):
         """Input has shape `(batch_size, seq_len, emb_dim)`"""
         return x + self.pos_embedding
@@ -37,24 +37,24 @@ class ViT(nn.Module):
     """
 
     def __init__(
-        self,
-        name: Optional[str] = None,
-        pretrained: bool = False,
-        patches: int = 16,
-        dim: int = 768,
-        ff_dim: int = 3072,
-        num_heads: int = 12,
-        num_layers: int = 12,
-        attention_dropout_rate: float = 0.0,
-        dropout_rate: float = 0.1,
-        representation_size: Optional[int] = None,
-        load_repr_layer: bool = False,
-        classifier: str = 'token',
-        positional_embedding: str = '1d',
-        in_channels: int = 3,
-        image_size: Optional[int] = None,
-        num_classes: Optional[int] = None,
-        add_rotation_token: bool = False
+            self,
+            name: Optional[str] = None,
+            pretrained: bool = False,
+            patches: int = 16,
+            dim: int = 768,
+            ff_dim: int = 3072,
+            num_heads: int = 12,
+            num_layers: int = 12,
+            attention_dropout_rate: float = 0.0,
+            dropout_rate: float = 0.1,
+            representation_size: Optional[int] = None,
+            load_repr_layer: bool = False,
+            classifier: str = 'token',
+            positional_embedding: str = '1d',
+            in_channels: int = 3,
+            image_size: Optional[int] = None,
+            num_classes: Optional[int] = None,
+            add_rotation_token: bool = False
     ):
         super().__init__()
 
@@ -105,8 +105,6 @@ class ViT(nn.Module):
             self.class_token = nn.Parameter(torch.zeros(1, 1, dim))
             if not self.add_rotation_token:
                 seq_len += 1
-
-
 
         # Positional embedding
         if positional_embedding.lower() == '1d':
@@ -150,16 +148,19 @@ class ViT(nn.Module):
     def init_weights(self):
         def _init(m):
             if isinstance(m, nn.Linear):
-                nn.init.xavier_uniform_(m.weight)  # _trunc_normal(m.weight, std=0.02)  # from .initialization import _trunc_normal
+                nn.init.xavier_uniform_(
+                    m.weight)  # _trunc_normal(m.weight, std=0.02)  # from .initialization import _trunc_normal
                 if hasattr(m, 'bias') and m.bias is not None:
                     nn.init.normal_(m.bias, std=1e-6)  # nn.init.constant(m.bias, 0)
+
         self.apply(_init)
         nn.init.constant_(self.fc.weight, 0)
         nn.init.constant_(self.fc.bias, 0)
-        nn.init.normal_(self.positional_embedding.pos_embedding, std=0.02)  # _trunc_normal(self.positional_embedding.pos_embedding, std=0.02)
+        nn.init.normal_(self.positional_embedding.pos_embedding,
+                        std=0.02)  # _trunc_normal(self.positional_embedding.pos_embedding, std=0.02)
         nn.init.constant_(self.class_token, 0)
 
-    def forward(self, x, output_layer_ind = -1):
+    def forward(self, x, output_layer_ind=-1):
         """Breaks image into patches, applies transformer, applies MLP head.
 
         Args:
@@ -168,7 +169,6 @@ class ViT(nn.Module):
         b, c, fh, fw = x.shape
         x = self.patch_embedding(x)  # b,d,gh,gw
         x = x.flatten(2).transpose(1, 2)  # b,gh*gw,d
-
 
         if self.add_rotation_token:
             x = torch.cat((self.rotation_token.expand(b, -1, -1), x), dim=1)  # b,gh*gw+1,d
@@ -179,7 +179,7 @@ class ViT(nn.Module):
         if hasattr(self, 'positional_embedding'):
             x = self.positional_embedding(x)  # b,gh*gw+1,d
 
-        x = self.transformer(x, output_layer_ind = output_layer_ind)  # b,gh*gw+1,d
+        x = self.transformer(x, output_layer_ind=output_layer_ind)  # b,gh*gw+1,d
         if hasattr(self, 'pre_logits'):
             x = self.pre_logits(x)
             x = torch.tanh(x)
@@ -187,9 +187,6 @@ class ViT(nn.Module):
             x = self.norm(x)[:, 0]  # b,d - output of rotation head or classification head
             x = self.fc(x)  # b,num_classes
         return x
-
-
-
 
 
 class AnomalyViT(nn.Module):
@@ -205,25 +202,25 @@ class AnomalyViT(nn.Module):
     """
 
     def __init__(
-        self,
-        name: Optional[str] = None,
-        pretrained: bool = False,
-        patches: int = 16,
-        dim: int = 768,
-        ff_dim: int = 3072,
-        num_heads: int = 12,
-        num_layers: int = 12,
-        attention_dropout_rate: float = 0.0,
-        dropout_rate: float = 0.1,
-        representation_size: Optional[int] = None,
-        load_repr_layer: bool = False,
-        classifier: str = 'token',
-        positional_embedding: str = '1d',
-        in_channels: int = 3,
-        image_size: Optional[int] = None,
-        num_classes: Optional[int] = None,
-        add_rotation_token: bool = False,
-        clone_block_ind = -1
+            self,
+            name: Optional[str] = None,
+            pretrained: bool = False,
+            patches: int = 16,
+            dim: int = 768,
+            ff_dim: int = 3072,
+            num_heads: int = 12,
+            num_layers: int = 12,
+            attention_dropout_rate: float = 0.0,
+            dropout_rate: float = 0.1,
+            representation_size: Optional[int] = None,
+            load_repr_layer: bool = False,
+            classifier: str = 'token',
+            positional_embedding: str = '1d',
+            in_channels: int = 3,
+            image_size: Optional[int] = None,
+            num_classes: Optional[int] = None,
+            add_rotation_token: bool = False,
+            clone_block_ind=-1
     ):
         super().__init__()
 
@@ -274,8 +271,6 @@ class AnomalyViT(nn.Module):
             self.class_token = nn.Parameter(torch.zeros(1, 1, dim))
             if not self.add_rotation_token:
                 seq_len += 1
-
-
 
         # Positional embedding
         if positional_embedding.lower() == '1d':
@@ -324,16 +319,19 @@ class AnomalyViT(nn.Module):
     def init_weights(self):
         def _init(m):
             if isinstance(m, nn.Linear):
-                nn.init.xavier_uniform_(m.weight)  # _trunc_normal(m.weight, std=0.02)  # from .initialization import _trunc_normal
+                nn.init.xavier_uniform_(
+                    m.weight)  # _trunc_normal(m.weight, std=0.02)  # from .initialization import _trunc_normal
                 if hasattr(m, 'bias') and m.bias is not None:
                     nn.init.normal_(m.bias, std=1e-6)  # nn.init.constant(m.bias, 0)
+
         self.apply(_init)
         nn.init.constant_(self.fc.weight, 0)
         nn.init.constant_(self.fc.bias, 0)
-        nn.init.normal_(self.positional_embedding.pos_embedding, std=0.02)  # _trunc_normal(self.positional_embedding.pos_embedding, std=0.02)
+        nn.init.normal_(self.positional_embedding.pos_embedding,
+                        std=0.02)  # _trunc_normal(self.positional_embedding.pos_embedding, std=0.02)
         nn.init.constant_(self.class_token, 0)
 
-    def forward(self, x, output_layer_ind = -1):
+    def forward(self, x, output_layer_ind=-1):
         """Breaks image into patches, applies transformer, applies MLP head.
 
         Args:
@@ -342,7 +340,6 @@ class AnomalyViT(nn.Module):
         b, c, fh, fw = x.shape
         x = self.patch_embedding(x)  # b,d,gh,gw
         x = x.flatten(2).transpose(1, 2)  # b,gh*gw,d
-
 
         if self.add_rotation_token:
             x = torch.cat((self.rotation_token.expand(b, -1, -1), x), dim=1)  # b,gh*gw+1,d
