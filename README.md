@@ -23,12 +23,12 @@ conda install --file requirements.txt
 
 ### Unimodal Training And Evaluation  
 ```
---dataset cifar10 --data_path ./data --epochs 30 --batch_size 6 --eval_every 5 --unimodal
---dataset cifar10 --batch_size 14 --data_path ./data --whitening_threshold 0.9 --unimodal
+--dataset cifar10 --data_path ./data --epochs 30 --batch_size 32 --eval_every 5 --unimodal
+--dataset cifar10 --batch_size 32 --data_path ./data --whitening_threshold 0.9 --unimodal
 ```
 
 ### Multimodal Training And Evaluation  
 ```
---dataset cifar10 --data_path ./data --epochs 30 --batch_size 6 --eval_every 5 
---dataset cifar10 --batch_size 14 --data_path ./data --whitening_threshold 0.9 
+--dataset cifar10 --data_path ./data --epochs 30 --batch_size 32 --eval_every 5 
+--dataset cifar10 --batch_size 32 --data_path ./data --whitening_threshold 0.9 
 ```
