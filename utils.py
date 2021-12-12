@@ -303,8 +303,7 @@ def forward_one_epoch(loader,
                       num_of_epochs,
                       device='cuda'
                       ):
-    losses, cur_accuracies = [], []
-    all_preds, all_targets = [], []
+    losses = []
 
     for batch_idx, (inputs, targets) in enumerate(tqdm(loader)):
 
@@ -330,7 +329,7 @@ def forward_one_epoch(loader,
 
         # if batch_idx > 10:
         #     break
-    return losses, all_targets, all_preds
+    return losses
 
 
 def train(model, best_model, args, dataloaders,
@@ -360,17 +359,15 @@ def train(model, best_model, args, dataloaders,
 
         # training
         model = model.train()
-
         progress_bar_str = 'Teain: repeat %d -- Mean Loss: %.3f | Last Loss: %.3f'
 
-        losses, _, _ = forward_one_epoch(
-            loader=training_loader,
-            optimizer=optimizer,
-            criterion=criterion,
-            net=model,
-            mode=Mode.training,
-            progress_bar_str=progress_bar_str,
-            num_of_epochs=epoch)
+        losses = forward_one_epoch(loader=training_loader,
+                                   optimizer=optimizer,
+                                   criterion=criterion,
+                                   net=model,
+                                   mode=Mode.training,
+                                   progress_bar_str=progress_bar_str,
+                                   num_of_epochs=epoch)
 
         # save first batch loss for normalization
         train_epoch_loss = np.mean(losses)
@@ -395,13 +392,13 @@ def train(model, best_model, args, dataloaders,
             model.eval()
             progress_bar_str = 'Validation: repeat %d -- Mean Loss: %.3f | Last Loss: %.3f'
 
-            losses, _, _ = forward_one_epoch(loader=val_loader,
-                                             optimizer=optimizer,
-                                             criterion=criterion,
-                                             net=model,
-                                             mode=Mode.validation,
-                                             progress_bar_str=progress_bar_str,
-                                             num_of_epochs=epoch
+            losses = forward_one_epoch(loader=val_loader,
+                                       optimizer=optimizer,
+                                       criterion=criterion,
+                                       net=model,
+                                       mode=Mode.validation,
+                                       progress_bar_str=progress_bar_str,
+                                       num_of_epochs=epoch
                                              )
 
             val_epoch_loss = np.mean(losses)
@@ -435,13 +432,13 @@ def train(model, best_model, args, dataloaders,
 
             progress_bar_str = 'Test: repeat %d -- Mean Loss: %.3f | Last Loss: %.3f'
             model.eval()
-            test_losses, _, _ = forward_one_epoch(loader=test_loader,
-                                                  optimizer=None,
-                                                  criterion=criterion,
-                                                  net=model,
-                                                  mode=Mode.test,
-                                                  progress_bar_str=progress_bar_str,
-                                                  num_of_epochs=0)
+            test_losses = forward_one_epoch(loader=test_loader,
+                                            optimizer=None,
+                                            criterion=criterion,
+                                            net=model,
+                                            mode=Mode.test,
+                                            progress_bar_str=progress_bar_str,
+                                            num_of_epochs=0)
 
             test_epoch_loss = np.mean(test_losses)
             print("===================== OOD val Results =====================")
@@ -468,8 +465,7 @@ def train(model, best_model, args, dataloaders,
                 anomaly_targets = [0 if i in anomaly_classes else 1 for i in testset.targets]
 
                 model = model.eval()
-                outputs_recon_scores = get_finetuned_features(args,
-                                                              model,
+                outputs_recon_scores = get_finetuned_features(model,
                                                               eval_test_loader)
                 outputs_recon_scores = outputs_recon_scores[0]
 
@@ -488,13 +484,13 @@ def train(model, best_model, args, dataloaders,
     progress_bar_str = 'Test: repeat %d -- Mean Loss: %.3f | Last Loss: %.3f'
 
     model = model.eval()
-    test_losses, _, _ = forward_one_epoch(loader=test_loader,
-                                          optimizer=None,
-                                          criterion=criterion,
-                                          net=model,
-                                          mode=Mode.test,
-                                          progress_bar_str=progress_bar_str,
-                                          num_of_epochs=0)
+    test_losses = forward_one_epoch(loader=test_loader,
+                                    optimizer=None,
+                                    criterion=criterion,
+                                    net=model,
+                                    mode=Mode.test,
+                                    progress_bar_str=progress_bar_str,
+                                    num_of_epochs=0)
 
     best_model = best_model.to('cpu')
     model = model.to('cpu')
@@ -504,13 +500,13 @@ def train(model, best_model, args, dataloaders,
     return model, best_model, cur_acc_loss
 
 
-def get_finetuned_features(args,
-                           model,
+def get_finetuned_features(model,
                            loader,
+                           seed = 42
                            ):
-    torch.manual_seed(0)
+    torch.manual_seed(seed)
     if torch.cuda.is_available():
-        torch.cuda.manual_seed_all(42)
+        torch.cuda.manual_seed_all(seed)
 
     model = model.to('cuda')
     criterion = nn.MSELoss(reduce=False)

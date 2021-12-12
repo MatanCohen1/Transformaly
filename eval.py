@@ -189,8 +189,7 @@ if __name__ == '__main__':
             model = model.to('cuda')
             model.eval()
 
-            test_finetuned_features = get_finetuned_features(args=args,
-                                                             model=model,
+            test_finetuned_features = get_finetuned_features(model=model,
                                                              loader=test_loader)
 
             if not os.path.exists(join(base_feature_path, 'features_distances')):
@@ -226,8 +225,7 @@ if __name__ == '__main__':
             print_and_add_to_log(model_checkpoint_path, logging)
             model = model.to('cuda')
 
-            train_finetuned_features = get_finetuned_features(args=args,
-                                                              model=model,
+            train_finetuned_features = get_finetuned_features(model=model,
                                                               loader=train_loader)
             np.save(join(base_feature_path, 'features_distances', 'train_finetuned_features.npy'),
                     train_finetuned_features)

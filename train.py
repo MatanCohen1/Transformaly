@@ -37,7 +37,7 @@ if __name__ == '__main__':
     BASE_PATH = 'experiments'
 
     if args['dataset'] == 'cifar10':
-        _classes = range(1,10)
+        _classes = range(10)
     elif args['dataset'] == 'fmnist':
         _classes = range(10)
     elif args['dataset'] == 'cifar100':
