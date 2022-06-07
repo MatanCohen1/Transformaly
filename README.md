@@ -1,4 +1,4 @@
-# Transformaly - Exploit Vision Transformer Power for Anomaly Detection
+# Transformaly: Two Feature Spaces Are Better Than One
 
 Official PyTorch implementation of [**"Transformaly - Exploit Vision Transformer Power for Anomaly Detection"**](https://arxiv.org/abs/2112.04185).
 
