@@ -1,6 +1,6 @@
 # Transformaly: Two Feature Spaces Are Better Than One
 
-Official PyTorch implementation of [**"Transformaly - Exploit Vision Transformer Power for Anomaly Detection"**](https://arxiv.org/abs/2112.04185).
+Official PyTorch implementation of [**"Transformaly: Two Feature Spaces Are Better Than One"**](https://arxiv.org/abs/2112.04185).
 
 We Introduces *Transformaly* - a transformer based architecture that uses pretrained Vision Transformer and teacher-student training for semantic anomaly detection.
 In our setting, a pretrained teacher network is used to train a student network on the normal training samples. 
