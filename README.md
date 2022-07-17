@@ -35,7 +35,7 @@ conda install --file requirements.txt
 
 ### Citation
 If you find this useful, please cite our paper:
-
+```
 @InProceedings{Cohen_2022_CVPR,
     author    = {Cohen, Matan Jacob and Avidan, Shai},
     title     = {Transformaly - Two (Feature Spaces) Are Better Than One},
@@ -44,3 +44,4 @@ If you find this useful, please cite our paper:
     year      = {2022},
     pages     = {4060-4069}
 }
+```
