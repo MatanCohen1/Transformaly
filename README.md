@@ -1,6 +1,6 @@
 # Transformaly: Two Feature Spaces Are Better Than One
 
-Official PyTorch implementation of [**"Transformaly: Two Feature Spaces Are Better Than One"**](https://arxiv.org/abs/2112.04185).
+Official PyTorch implementation of [**"Transformaly: Two Feature Spaces Are Better Than One"**](https://openaccess.thecvf.com/content/CVPR2022W/L3D-IVU/papers/Cohen_Transformaly_-_Two_Feature_Spaces_Are_Better_Than_One_CVPRW_2022_paper.pdf).
 
 We Introduces *Transformaly* - a transformer based architecture that uses pretrained Vision Transformer and teacher-student training for semantic anomaly detection.
 In our setting, a pretrained teacher network is used to train a student network on the normal training samples. 
@@ -32,3 +32,15 @@ conda install --file requirements.txt
 --dataset cifar10 --data_path ./data --epochs 30 --batch_size 32 --eval_every 5 
 --dataset cifar10 --batch_size 32 --data_path ./data --whitening_threshold 0.9 
 ```
+
+### Citation
+If you find this useful, please cite our paper:
+
+@InProceedings{Cohen_2022_CVPR,
+    author    = {Cohen, Matan Jacob and Avidan, Shai},
+    title     = {Transformaly - Two (Feature Spaces) Are Better Than One},
+    booktitle = {Proceedings of the IEEE/CVF Conference on Computer Vision and Pattern Recognition (CVPR) Workshops},
+    month     = {June},
+    year      = {2022},
+    pages     = {4060-4069}
+}
